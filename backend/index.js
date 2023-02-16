@@ -4,17 +4,22 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
+// require path to serve static files
+const path = require("path");
 
 // Express Settings
 app.use(cors());
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static("public"));
+
+// Serve static front end in production mode
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, 'public', 'build')));
+}
 
 // Controllers & Routes
-
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/places", require("./controllers/places"));
 app.use("/users", require("./controllers/users"));
 
